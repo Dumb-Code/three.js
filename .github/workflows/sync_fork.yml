@@ -1,0 +1,24 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '0 */12 * * *' # every day at 12:00 and 00:00
+  workflow_dispatch: # on button click
+
+jobs:
+  sync_latest_from_upstream:
+    runs-on: ubuntu-latest
+    name: Sync latest commits from upstream repo
+
+    steps:
+    - name: Checkout target repo
+      uses: actions/checkout@v2
+      
+    - name: Sync upstream changes
+      uses: aormsby/Fork-Sync-With-Upstream-action@check-fix-2
+      with:
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        target_sync_branch: dev
+        upstream_sync_repo: mrdoob/three.js
+        upstream_sync_branch: dev
+        shallow_since: 13 Hours Ago
