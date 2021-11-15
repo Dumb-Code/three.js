@@ -915,8 +915,8 @@ class TransformControlsGizmo extends Object3D {
 				[ new Mesh( translationLineGeometry, matGreen), [ 0, 0.5, 0 ], null]
 			],
 			Z: [
-				[ new Mesh( arrowGeometry, matBlue ), [ 0, 0, 1 ], [ - Math.PI / 2, 0, 0 ], null, 'fwd' ],
-				[ new Mesh( translationLineGeometry, matBlue ), [ 0, 0, 0.5 ], [ - Math.PI / 2, 0, 0 ]]
+				[ new Mesh( arrowGeometry, matBlue ), [ 0, 0, 1 ], [ Math.PI / 2, 0, 0 ], null, 'fwd' ],
+				[ new Mesh( translationLineGeometry, matBlue ), [ 0, 0, 0.5 ], [ Math.PI / 2, 0, 0 ]]
 			],
 			// XYZ: [
 			// 	[ new Mesh( new SphereBufferGeometry( 0.1 ), matWhiteTransparent.clone() ), [ 0, 0, 0 ], [ 0, 0, 0 ]]
