@@ -1309,7 +1309,7 @@ class TransformControlsGizmo extends Object3D {
 
 			}
 
-			handle.scale.set( 1, 1, 1 ).multiplyScalar( factor * this.size / 4 );
+			handle.scale.set( 1, 1, 1 ).multiplyScalar( factor * this.size / 7 );
 
 			if(centerFace && handle.name.length == 2) {
 				let cube = this.object.dcmCube
