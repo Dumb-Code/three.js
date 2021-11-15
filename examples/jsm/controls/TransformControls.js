@@ -15,7 +15,6 @@ import {
 	PlaneGeometry,
 	Quaternion,
 	Raycaster,
-	SphereGeometry,
 	TorusGeometry,
 	Vector3
 } from '../../../build/three.module.js';
@@ -131,7 +130,6 @@ class TransformControls extends Object3D {
 		const cameraQuaternion = new Quaternion();
 		const pointStart = new Vector3();
 		const pointEnd = new Vector3();
-		const offset = new Vector3();
 		const rotationAxis = new Vector3();
 		const rotationAngle = 0;
 		const eye = new Vector3();
@@ -146,7 +144,6 @@ class TransformControls extends Object3D {
 		defineProperty( 'cameraQuaternion', cameraQuaternion );
 		defineProperty( 'pointStart', pointStart );
 		defineProperty( 'pointEnd', pointEnd );
-		defineProperty( 'offset', offset );
 		defineProperty( 'rotationAxis', rotationAxis );
 		defineProperty( 'rotationAngle', rotationAngle );
 		defineProperty( 'eye', eye );
@@ -308,7 +305,7 @@ class TransformControls extends Object3D {
 
 			// offset.applyQuaternion( quaternionStart ).divide( parentScale );
 			if(axis.endsWith('N')) {
-				this.offset.multiplyScalar(-1)
+				this._offset.multiplyScalar(-1)
 			}
 
 			let v = axis.endsWith('N') ? -1 : 1
@@ -320,7 +317,7 @@ class TransformControls extends Object3D {
 				_tempVector.set(0, 0, v)
 			}
 			
-			_studioDimensionEvent.length = this.offset.x+this.offset.y+this.offset.z
+			_studioDimensionEvent.length = this._offset.x+this._offset.y+this._offset.z
 			_studioDimensionEvent.axis = _tempVector.normalize()
 
 			this.dispatchEvent(_studioDimensionEvent)
@@ -343,9 +340,9 @@ class TransformControls extends Object3D {
 			if ( axis.indexOf( 'Y' ) === - 1 ) this._offset.y = 0;
 			if ( axis.indexOf( 'Z' ) === - 1 ) this._offset.z = 0;
 
-			_studioTranslateEvent.axis = _tempVector.copy(this.offset).normalize()
+			_studioTranslateEvent.axis = _tempVector.copy(this._offset).normalize()
 			_studioTranslateEvent.parentQuaternionInv = this._parentQuaternionInv
-			_studioTranslateEvent.length = 16*this.offset.length()
+			_studioTranslateEvent.length = 16*this._offset.length()
 			this.dispatchEvent(_studioTranslateEvent)
 
 			if ( space === 'local' && axis !== 'XYZ' ) {
@@ -1288,7 +1285,7 @@ class TransformControlsGizmo extends Object3D {
 		handles = handles.concat( this.gizmo[ this.mode ].children );
 		handles = handles.concat( this.helper[ this.mode ].children );
 
-		const centerFace = this.mode === 'dimensions' && this.object !== undefined && this.object.dcmCube !== undefined
+		const centerFace = this.mode === 'dimensions' && this.object.dcmCube !== undefined
 
 		for ( let i = 0; i < handles.length; i ++ ) {
 
@@ -1318,7 +1315,7 @@ class TransformControlsGizmo extends Object3D {
 				let cube = this.object.dcmCube
 				if(handle.tag === "doScale") {
 					cube.getWorldPosition(0.5, 0.5, 0.5, handle.position)
-          const dimensions = cube.dimension.value
+					const dimensions = cube.dimension.value
           const cg = cube.cubeGrow.value
 					if(handle.name.startsWith('X')) {
 						handle.scale.x = (dimensions[0] + cg[0])/32 || 0.001
