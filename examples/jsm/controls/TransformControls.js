@@ -1032,29 +1032,29 @@ class TransformControlsGizmo extends Object3D {
 		};
 
 		const helperDimensions = {
-			START: [
-				[ new Mesh( new OctahedronGeometry( 0.01, 2 ), matHelper ), null, null, null, 'helper' ]
-			],
-			END: [
-				[ new Mesh( new OctahedronGeometry( 0.01, 2 ), matHelper ), null, null, null, 'helper' ]
-			],
-			DELTA: [
-				[ new Line( TranslateHelperGeometry(), matHelper ), null, null, null, 'helper' ]
-			],
+			// START: [
+			// 	[ new Mesh( new OctahedronGeometry( 0.01, 2 ), matHelper ), null, null, null, 'helper' ]
+			// ],
+			// END: [
+			// 	[ new Mesh( new OctahedronGeometry( 0.01, 2 ), matHelper ), null, null, null, 'helper' ]
+			// ],
+			// DELTA: [
+			// 	[ new Line( TranslateHelperGeometry(), matHelper ), null, null, null, 'helper' ]
+			// ],
 			XN: [
-				[ new Line( lineGeometry, matHelper.clone() ), [ 1e3, 0, 0 ], null, [ 1e6, 1, 1 ], 'helper' ]
+				[ new Line( lineGeometry, matHelper.clone() ), [ - 1e3, 0, 0 ], null, [ 1e6, 1, 1 ], 'helper' ]
 			],
 			XP: [
 				[ new Line( lineGeometry, matHelper.clone() ), [ - 1e3, 0, 0 ], null, [ 1e6, 1, 1 ], 'helper' ]
 			],
 			YN: [
-				[ new Line( lineGeometry, matHelper.clone() ), [ 0, 1e3, 0 ], [ 0, 0, Math.PI / 2 ], [ 1e6, 1, 1 ], 'helper' ]
+				[ new Line( lineGeometry, matHelper.clone() ), [ 0, - 1e3, 0 ], [ 0, 0, Math.PI / 2 ], [ 1e6, 1, 1 ], 'helper' ]
 			],
 			YP: [
 				[ new Line( lineGeometry, matHelper.clone() ), [ 0, - 1e3, 0 ], [ 0, 0, Math.PI / 2 ], [ 1e6, 1, 1 ], 'helper' ]
 			],
 			ZN: [
-				[ new Line( lineGeometry, matHelper.clone() ), [ 0, 0, 1e3 ], [ 0, - Math.PI / 2, 0 ], [ 1e6, 1, 1 ], 'helper' ]
+				[ new Line( lineGeometry, matHelper.clone() ), [ 0, 0, - 1e3 ], [ 0, - Math.PI / 2, 0 ], [ 1e6, 1, 1 ], 'helper' ]
 			],
 			ZP: [
 				[ new Line( lineGeometry, matHelper.clone() ), [ 0, 0, - 1e3 ], [ 0, - Math.PI / 2, 0 ], [ 1e6, 1, 1 ], 'helper' ]
