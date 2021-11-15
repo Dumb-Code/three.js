@@ -1305,7 +1305,11 @@ class TransformControlsGizmo extends Object3D {
 
 			} else {
 
-				factor = this.worldPosition.distanceTo( this.cameraPosition ) * Math.min( 1.9 * Math.tan( Math.PI * this.camera.fov / 360 ) / this.camera.zoom, 7 );
+				//Used to have the mesh get smaller as it gets further away.
+        //The angleBetween and cos is used to make it the right size even when not at the center of the screen
+				const positionDifference = _tempVector.subVectors(this.worldPosition, this.cameraPosition ).normalize();
+				let angleBetween = positionDifference.angleTo(this.camera.getWorldDirection(_tempVector2));
+				factor = this.worldPosition.distanceTo( this.cameraPosition ) * Math.cos(angleBetween);
 
 			}
 
@@ -1332,6 +1336,7 @@ class TransformControlsGizmo extends Object3D {
 						handle.position
 					)
 				}
+				cube.cubeMesh.getWorldQuaternion(handle.quaternion)
 			}
 
 
