@@ -9,7 +9,7 @@
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.THREE = {}));
 })(this, (function (exports) { 'use strict';
 
-	const REVISION = '136dev';
+	const REVISION = '136';
 	const MOUSE = {
 		LEFT: 0,
 		MIDDLE: 1,
@@ -6649,31 +6649,6 @@
 			this.r = color.r;
 			this.g = color.g;
 			this.b = color.b;
-			return this;
-		}
-
-		copyGammaToLinear(color, gammaFactor = 2.0) {
-			this.r = Math.pow(color.r, gammaFactor);
-			this.g = Math.pow(color.g, gammaFactor);
-			this.b = Math.pow(color.b, gammaFactor);
-			return this;
-		}
-
-		copyLinearToGamma(color, gammaFactor = 2.0) {
-			const safeInverse = gammaFactor > 0 ? 1.0 / gammaFactor : 1.0;
-			this.r = Math.pow(color.r, safeInverse);
-			this.g = Math.pow(color.g, safeInverse);
-			this.b = Math.pow(color.b, safeInverse);
-			return this;
-		}
-
-		convertGammaToLinear(gammaFactor) {
-			this.copyGammaToLinear(this, gammaFactor);
-			return this;
-		}
-
-		convertLinearToGamma(gammaFactor) {
-			this.copyLinearToGamma(this, gammaFactor);
 			return this;
 		}
 
