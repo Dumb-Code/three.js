@@ -9,27 +9,29 @@
 	</head>
 	<body>
 		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> WebGPU - Custom Lighting Model<br/>(Chrome Canary with flag: --enable-unsafe-webgpu)
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> WebGPU - Custom Lighting Model
 		</div>
 
+		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
 		<script type="importmap">
-		{
-			"imports": {
-				"three": "../build/three.module.js"
+			{
+				"imports": {
+					"three": "../build/three.module.js",
+					"three-nodes/": "./jsm/nodes/"
+				}
 			}
-		}
 		</script>
+
 		<script type="module">
 
 			import * as THREE from 'three';
+			import * as Nodes from 'three-nodes/Nodes.js';
 
+			import WebGPU from './jsm/capabilities/WebGPU.js';
 			import WebGPURenderer from './jsm/renderers/webgpu/WebGPURenderer.js';
-			import WebGPU from './jsm/renderers/webgpu/WebGPU.js';
 
 			import { OrbitControls } from './jsm/controls/OrbitControls.js';
-
-			import * as Nodes from './jsm/renderers/nodes/Nodes.js';
-			import { addTo } from './jsm/renderers/nodes/ShaderNode.js';
 
 			let camera, scene, renderer;
 
@@ -43,7 +45,7 @@
 
 					document.body.appendChild( WebGPU.getErrorMessage() );
 
-					throw 'No WebGPU support';
+					throw new Error( 'No WebGPU support' );
 
 				}
 
@@ -71,7 +73,7 @@
 
 				//light nodes ( selective lights )
 
-				const allLightsNode = Nodes.LightsNode.fromLights( [ light1, light2, light3 ] );
+				const allLightsNode = new Nodes.LightsNode().fromLights( [ light1, light2, light3 ] );
 
 				// points
 
@@ -91,16 +93,15 @@
 
 				const customLightingModel = new Nodes.ShaderNode( ( inputs ) => {
 
-					const { lightColor, directDiffuse } = inputs;
+					const { lightColor, reflectedLight } = inputs;
 
-					addTo( directDiffuse, lightColor );
+					reflectedLight.directDiffuse.add( lightColor );
 
 				} );
 
-				const lightingModelContext = new Nodes.ContextNode( allLightsNode );
-				lightingModelContext.context.lightingModel = customLightingModel;
+				const lightingModelContext = new Nodes.ContextNode( allLightsNode, { lightingModelNode: { direct : customLightingModel } } );
 
-				materialPoints.lightNode = lightingModelContext;
+				materialPoints.lightsNode = lightingModelContext;
 
 				//
 
@@ -112,6 +113,8 @@
 				renderer = new WebGPURenderer();
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.toneMappingNode = new Nodes.ToneMappingNode( THREE.LinearToneMapping, 1 );
+				renderer.outputEncoding = THREE.sRGBEncoding;
 				document.body.appendChild( renderer.domElement );
 
 				// controls
