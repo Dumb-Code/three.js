@@ -444,9 +444,7 @@ class WebGPUNodeBuilder extends NodeBuilder {
 		const snippets = [];
 		const vars = this.vars[ shaderStage ];
 
-		for ( let index = 0; index < vars.length; index ++ ) {
-
-			const variable = vars[ index ];
+		for ( const variable of vars ) {
 
 			const name = variable.name;
 			const type = this.getType( variable.type );
@@ -595,7 +593,7 @@ class WebGPUNodeBuilder extends NodeBuilder {
 
 			for ( const node of flowNodes ) {
 
-				const flowSlotData = this.getFlowData( shaderStage, node );
+				const flowSlotData = this.getFlowData( node/*, shaderStage*/ );
 				const slotName = node.name;
 
 				if ( slotName ) {
@@ -709,7 +707,7 @@ ${shaderData.varys}
 // codes
 ${shaderData.codes}
 
-@stage( vertex )
+@vertex
 fn main( ${shaderData.attributes} ) -> NodeVarysStruct {
 
 	// system
@@ -738,7 +736,7 @@ ${shaderData.uniforms}
 // codes
 ${shaderData.codes}
 
-@stage( fragment )
+@fragment
 fn main( ${shaderData.varys} ) -> @location( 0 ) vec4<f32> {
 
 	// vars
@@ -764,7 +762,7 @@ ${shaderData.uniforms}
 // codes
 ${shaderData.codes}
 
-@stage( compute ) @workgroup_size( ${workgroupSize} )
+@compute @workgroup_size( ${workgroupSize} )
 fn main( ${shaderData.attributes} ) {
 
 	// system

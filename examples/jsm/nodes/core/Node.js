@@ -8,6 +8,8 @@ class Node {
 
 	constructor( nodeType = null ) {
 
+		this.isNode = true;
+
 		this.nodeType = nodeType;
 
 		this.updateType = NodeUpdateType.None;
@@ -21,6 +23,38 @@ class Node {
 	get type() {
 
 		return this.constructor.name;
+
+	}
+
+	getChildren() {
+
+		const children = [];
+
+		for ( const property in this ) {
+
+			const object = this[ property ];
+
+			if ( Array.isArray( object ) === true ) {
+
+				for ( const child of object ) {
+
+					if ( child?.isNode === true ) {
+
+						children.push( child );
+
+					}
+
+				}
+
+			} else if ( object?.isNode === true ) {
+
+				children.push( object );
+
+			}
+
+		}
+
+		return children;
 
 	}
 
@@ -42,6 +76,12 @@ class Node {
 
 	}
 
+	getConstructHash( /*builder*/ ) {
+
+		return this.uuid;
+
+	}
+
 	getReference( builder ) {
 
 		const hash = this.getHash( builder );
@@ -51,38 +91,61 @@ class Node {
 
 	}
 
-	update( /*frame*/ ) {
+	construct( builder ) {
 
-		console.warn( 'Abstract function.' );
+		const nodeProperties = builder.getNodeProperties( this );
 
-	}
+		for ( const childNode of this.getChildren() ) {
 
-	generate( /*builder, output*/ ) {
+			nodeProperties[ '_node' + childNode.id ] = childNode;
 
-		console.warn( 'Abstract function.' );
+		}
+
+		// return a outputNode if exists
+		return null;
 
 	}
 
 	analyze( builder ) {
 
-		const refNode = this.getReference( builder );
-
-		if ( this !== refNode ) {
-
-			return refNode.analyze( builder );
-
-		}
-
 		const nodeData = builder.getDataFromNode( this );
 		nodeData.dependenciesCount = nodeData.dependenciesCount === undefined ? 1 : nodeData.dependenciesCount + 1;
 
-		const nodeKeys = getNodesKeys( this );
+		if ( nodeData.dependenciesCount === 1 ) {
 
-		for ( const property of nodeKeys ) {
+			// node flow children
 
-			this[ property ].analyze( builder );
+			const nodeProperties = builder.getNodeProperties( this );
+
+			for ( const childNode of Object.values( nodeProperties ) ) {
+
+				if ( childNode?.isNode === true ) {
+
+					childNode.build( builder );
+
+				}
+
+			}
 
 		}
+
+	}
+
+	generate( builder, output ) {
+
+		const { outputNode } = builder.getNodeProperties( this );
+
+		if ( outputNode?.isNode === true ) {
+
+			return outputNode.build( builder, output );
+
+		}
+
+	}
+
+	update( /*frame*/ ) {
+
+		console.warn( 'Abstract function.' );
 
 	}
 
@@ -99,36 +162,72 @@ class Node {
 		builder.addNode( this );
 		builder.addStack( this );
 
-		const nodeData = builder.getDataFromNode( this );
-		const isGenerateOnce = this.generate.length === 1;
+		/* expected return:
+			- "construct"	-> Node
+			- "analyze"		-> null
+			- "generate"	-> String
+		*/
+		let result = null;
 
-		let snippet = null;
+		const buildStage = builder.getBuildStage();
 
-		if ( isGenerateOnce ) {
+		if ( buildStage === 'construct' ) {
 
-			const type = this.getNodeType( builder );
+			const properties = builder.getNodeProperties( this );
 
-			snippet = nodeData.snippet;
+			if ( properties.initialized !== true || builder.context.tempRead === false ) {
 
-			if ( snippet === undefined ) {
+				properties.initialized = true;
+				properties.outputNode = this.construct( builder );
 
-				snippet = this.generate( builder ) || '';
+				for ( const childNode of Object.values( properties ) ) {
 
-				nodeData.snippet = snippet;
+					if ( childNode?.isNode === true ) {
+
+						childNode.build( builder );
+
+					}
+
+				}
 
 			}
 
-			snippet = builder.format( snippet, type, output );
+		} else if ( buildStage === 'analyze' ) {
 
-		} else {
+			this.analyze( builder );
 
-			snippet = this.generate( builder, output ) || '';
+		} else if ( buildStage === 'generate' ) {
+
+			const isGenerateOnce = this.generate.length === 1;
+
+			if ( isGenerateOnce ) {
+
+				const type = this.getNodeType( builder );
+				const nodeData = builder.getDataFromNode( this );
+
+				result = nodeData.snippet;
+
+				if ( result === undefined /*|| builder.context.tempRead === false*/ ) {
+
+					result = this.generate( builder ) || '';
+
+					nodeData.snippet = result;
+
+				}
+
+				result = builder.format( result, type, output );
+
+			} else {
+
+				result = this.generate( builder, output ) || '';
+
+			}
 
 		}
 
 		builder.removeStack( this );
 
-		return snippet;
+		return result;
 
 	}
 
@@ -245,7 +344,5 @@ class Node {
 	}
 
 }
-
-Node.prototype.isNode = true;
 
 export default Node;
