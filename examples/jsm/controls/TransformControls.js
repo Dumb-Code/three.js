@@ -1334,7 +1334,7 @@ class TransformControlsGizmo extends Object3D {
 
 			if ( this.camera.isOrthographicCamera ) {
 
-				factor = ( this.camera.top - this.camera.bottom ) / this.camera.zoom;
+				factor = ( this.camera.top - this.camera.bottom );
 
 			} else {
 
