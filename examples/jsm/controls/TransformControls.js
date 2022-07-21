@@ -1318,7 +1318,7 @@ class TransformControlsGizmo extends Object3D {
 		handles = handles.concat( this.gizmo[ this.mode ].children );
 		handles = handles.concat( this.helper[ this.mode ].children );
 
-		const centerFace = this.mode === 'dimensions' && this.object.dcmCube !== undefined
+		const centerFace = this.mode === 'dimensions' && this.object.userData.dcmCube !== undefined
 
 		for ( let i = 0; i < handles.length; i ++ ) {
 
@@ -1349,7 +1349,7 @@ class TransformControlsGizmo extends Object3D {
 			handle.scale.set( 1, 1, 1 ).multiplyScalar( factor * this.size / 7 );
 
 			if(centerFace && handle.name.length == 2) {
-				let cube = this.object.dcmCube
+				let cube = this.object.userData.dcmCube
 				if(handle.tag === "doScale") {
 					cube.getWorldPosition(0.5, 0.5, 0.5, handle.position)
 					const dimensions = cube.dimension.value
