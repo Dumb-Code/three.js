@@ -1312,7 +1312,7 @@ class TransformControlsGizmo extends Object3D {
 		handles = handles.concat( this.gizmo[ this.mode ].children );
 		handles = handles.concat( this.helper[ this.mode ].children );
 
-		const centerFace = this.mode === 'dimensions' && this.object.userData.dcmCube !== undefined
+		const centerFace = this.mode === 'dimensions' && this.object?.userData?.dcmCube !== undefined
 
 		for ( let i = 0; i < handles.length; i ++ ) {
 
