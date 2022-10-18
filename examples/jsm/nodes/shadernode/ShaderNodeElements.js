@@ -9,6 +9,7 @@ import BlendModeNode from '../display/BlendModeNode.js';
 import ColorAdjustmentNode from '../display/ColorAdjustmentNode.js';
 import ColorSpaceNode from '../display/ColorSpaceNode.js';
 import NormalMapNode from '../display/NormalMapNode.js';
+import PosterizeNode from '../display/PosterizeNode.js';
 import ToneMappingNode from '../display/ToneMappingNode.js';
 
 // lighting
@@ -24,6 +25,7 @@ import RemapNode from '../utils/RemapNode.js';
 import RotateUVNode from '../utils/RotateUVNode.js';
 import SpriteSheetUVNode from '../utils/SpriteSheetUVNode.js';
 import TimerNode from '../utils/TimerNode.js';
+import TriplanarTexturesNode from '../utils/TriplanarTexturesNode.js';
 
 // geometry
 import RangeNode from '../geometry/RangeNode.js';
@@ -87,6 +89,8 @@ export const colorSpace = ( node, encoding ) => nodeObject( new ColorSpaceNode( 
 export const normalMap = nodeProxy( NormalMapNode );
 export const toneMapping = ( mapping, exposure, color ) => nodeObject( new ToneMappingNode( mapping, nodeObject( exposure ), nodeObject( color ) ) );
 
+export const posterize = nodeProxy( PosterizeNode );
+
 // lighting
 
 //export const lighting = nodeProxy( LightingNode ); // abstract
@@ -116,6 +120,9 @@ export const timerLocal = ( timeScale, value = 0 ) => nodeObject( new TimerNode(
 export const timerGlobal = ( timeScale, value = 0 ) => nodeObject( new TimerNode( TimerNode.GLOBAL, timeScale, value ) );
 export const timerDelta = ( timeScale, value = 0 ) => nodeObject( new TimerNode( TimerNode.DELTA, timeScale, value ) );
 export const frameId = nodeImmutable( TimerNode, TimerNode.FRAME );
+
+export const triplanarTextures = nodeProxy( TriplanarTexturesNode );
+export const triplanarTexture = ( texture, ...params ) => triplanarTextures( texture, texture, texture, ...params );
 
 // geometry
 

@@ -116,6 +116,8 @@ export const fn = ( code, includes ) => func( code, includes ).call;
 export const attribute = ( name, nodeType ) => nodeObject( new AttributeNode( name, nodeType ) );
 export const property = ( name, nodeOrType ) => nodeObject( new PropertyNode( name, getConstNodeType( nodeOrType ) ) );
 
+export const convert = ( node, types ) => nodeObject( new ConvertNode( nodeObject( node ), types ) );
+
 export const bypass = nodeProxy( BypassNode );
 export const code = nodeProxy( CodeNode );
 export const context = nodeProxy( ContextNode );
@@ -179,6 +181,7 @@ export const invert = nodeProxy( MathNode, MathNode.INVERT );
 export const dFdx = nodeProxy( MathNode, MathNode.DFDX );
 export const dFdy = nodeProxy( MathNode, MathNode.DFDY );
 export const round = nodeProxy( MathNode, MathNode.ROUND );
+export const reciprocal = nodeProxy( MathNode, MathNode.RECIPROCAL );
 
 export const atan2 = nodeProxy( MathNode, MathNode.ATAN2 );
 export const min = nodeProxy( MathNode, MathNode.MIN );
